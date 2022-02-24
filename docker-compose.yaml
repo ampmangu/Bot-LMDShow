@@ -1,0 +1,36 @@
+version: '3'
+services:
+  mongo:
+    #    TODO Use proper pwd handling
+    image: mongo:4.4.6
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
+    hostname: mongo
+    container_name: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=
+      - MONGO_INITDB_ROOT_PASSWORD=
+    volumes:
+      - ~/volumes/lmdshow:/data/db
+    networks:
+      - lmd-show-network
+    command: [ "--bind_ip", "0.0.0.0" ]
+  bot-lmdshow:
+    container_name: botlmdshow
+    build: .
+    networks:
+      - lmd-show-network
+    ports:
+      - "8085:8085"
+    depends_on:
+      - mongo
+    environment:
+      - SPRING_DATA_MONGODB_HOST=mongo
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_USERNAME=
+      - SPRING_DATA_MONGODB_PASSWORD=
+      - SPRING_DATA_MONGODB_DATABASE=lmd-show-db
+networks:
+  lmd-show-network:
+    driver: bridge
