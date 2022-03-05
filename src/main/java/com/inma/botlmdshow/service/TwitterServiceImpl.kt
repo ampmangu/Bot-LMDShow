@@ -1,7 +1,7 @@
 package com.inma.botlmdshow.service
 
-import com.inma.botlmdshow.domain.Datum
-import com.inma.botlmdshow.utils.DatumUtils
+import com.inma.botlmdshow.domain.PostDTO
+import com.inma.botlmdshow.utils.TweetUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -28,13 +28,13 @@ class TwitterServiceImpl() : TwitterService {
 
     @Value("\${twitter.tokenSecret}")
     private val tokenSecret: String? = null;
-    override fun postTweet(datum: Datum): Boolean {
+    override fun postTweet(postDTO: PostDTO): Boolean {
         val twitter = TwitterFactory().instance
         twitter.setOAuthConsumer(key, secret)
         val accessToken = AccessToken(token, tokenSecret)
         twitter.oAuthAccessToken = accessToken
         try {
-            val status = twitter.createTweet(text = DatumUtils.formText(datum))
+            val status = twitter.createTweet(text = TweetUtils.formTweet(postDTO))
             log.info("Postee algo {}", status.id)
             return true
         } catch (e: TwitterException) {

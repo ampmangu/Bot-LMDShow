@@ -1,8 +1,8 @@
 package com.inma.botlmdshow.service;
 
-import com.inma.botlmdshow.domain.Datum;
+import com.inma.botlmdshow.domain.PostDTO;
 
 public interface TwitterService {
 
-    boolean postTweet(Datum datum);
+    boolean postTweet(PostDTO postDTO);
 }

@@ -1,6 +1,6 @@
 package com.inma.botlmdshow;
 
-import com.inma.botlmdshow.domain.Data;
+import com.inma.botlmdshow.domain.PostDTO;
 import com.inma.botlmdshow.service.DiscriminatorService;
 import com.inma.botlmdshow.service.RedditService;
 import com.inma.botlmdshow.service.TwitterService;
@@ -11,12 +11,13 @@ import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
 public class Scheduler {
     private static final Logger log = LoggerFactory.getLogger(Scheduler.class);
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     private final RedditService redditService;
     private final DiscriminatorService discriminatorService;
     private final TwitterService twitterService;
@@ -29,10 +30,11 @@ public class Scheduler {
 
     @Scheduled(fixedRate = 5, timeUnit = TimeUnit.MINUTES)
     public void scheduledTask() {
-        log.info("Executando Bot LMDShow a las {}", dateFormat.format(new Date()));
-        Data allPosts = this.redditService.getAllPosts();
-        log.info("Recibio {} posts", allPosts.getData().size());
-        allPosts.getData().forEach(post -> {
+        String currentDate = dateFormat.format(new Date());
+        log.info("Executando Bot LMDShow a las {}", currentDate);
+        List<PostDTO> allPosts = this.redditService.getAllPosts();
+        log.info("Recibio {} posts", allPosts.size());
+        allPosts.forEach(post -> {
             boolean discriminated = discriminatorService.discriminatePost(post);
             if (!discriminated) {
                 twitterService.postTweet(post);

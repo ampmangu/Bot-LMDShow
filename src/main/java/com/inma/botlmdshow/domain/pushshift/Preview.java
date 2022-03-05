@@ -1,4 +1,4 @@
-package com.inma.botlmdshow.domain;
+package com.inma.botlmdshow.domain.pushshift;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
